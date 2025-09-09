@@ -1,75 +1,47 @@
+Vimal's Portfolio
+Hello there! My name is Vimal, and I am a Full Stack Developer. This is my personal portfolio website, where I showcase my projects, skills, and professional journey.
 
-# Angie
+🚀 About This Project
+This portfolio is built with Astro, a modern framework designed for building fast, content-focused websites. By leveraging Astro's "island architecture," the site provides a blazing-fast user experience by shipping minimal JavaScript.
 
-ANGIE is a sleek Astro portfolio template built for creatives and developers. Featuring responsive layouts, customizable sections, and a bold brutalist design, it’s made to help you stand out and showcase your work with style.
+✨ Features
+Performance-First: The website is built to be extremely fast, with a focus on quick load times and smooth navigation.
 
+Responsive Design: The layout is fully responsive and looks great on any device, from desktops to mobile phones.
 
+Project Showcase: A dedicated section to display my work and personal projects.
 
-![basics](./src/assets/demo/thumbnail.png)
+📦 Getting Started
+Prerequisites
+You will need to have Node.js and npm (or yarn/pnpm) installed on your machine.
 
+Installation
+Clone the repository:
 
-### Dependencies used in this project:
-- [TailwindCSS](https://tailwindcss.com/)
-- [GSAP](https://gsap.com/)
-- [Remix Icon](https://remixicon.com/)
+Bash
 
-### Credits:
-- [Pexels images](https://www.pexels.com/)
-- [Design inspo](https://www.figma.com/design/YHGwlMXQLVCE3mTF4JVA5I/2024-Portfolios-(Community)?node-id=1-914&t=6JAt4v8pqxzppZ0b-0)
+git clone https://github.com/Hack3roff/Profile.git
+Navigate to the project directory:
 
+Bash
 
+cd Profile
+Install dependencies:
 
-Inside of your Astro project, you'll see the following folders and files:
+Bash
 
-```text
+npm install
+Running the Project
+Start the development server:
 
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Bars.astro
-        └── Button.astro
-        └── CallToAction.astro
-        └── Footer.astro
-        └── Header.astro
-        └── Hero.astro
-        └── MarddownPost.astro
-        └── Reviews.astro
-        └── Service.astro
-        └── Tools.astro
-        └── Work.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-        └── posts/
-        └── blog.astro
-        └── index.astro
-└── styles/
-└── package.json
-```
+Bash
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+npm run dev
+This command will launch a local development server at http://localhost:4321.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Build for production:
 
-Any static assets, like images, can be placed in the `public/` directory.
+Bash
 
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-
-
-
-## 👀 Curious to Explore More?
-
-Check out [LAB-CH3](https://github.com/LaB-CH3) for a growing collection of current and future templates. 
-
-If you’ve found this helpful, consider fueling my creativity!  
-[![Buy me a coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/d2OuR1c)
-
+npm run build
+This will compile your site into a production-ready dist/ folder, which you can then deploy to a hosting service.

@@ -1,13 +1,13 @@
 ---
 const mytools = [
-  'Figma', 'Framer', 'Webflow', 'Notion', 'Lottie', 'Canva', 'Sketch', 'Shopify', 'Photoshop', 'Adobe XD', 'Miro'
+  'HTML', 'CSS', 'JS', 'Svelte', 'Python', 'React', 'TensorFlow', 'PyTorch'
 ]
 --- 
 <script>
 import { gsap } from 'gsap';
 
 document.addEventListener('DOMContentLoaded', function () {
-    const clonedContainer = document.querySelector('#cloned') as any
+    const clonedContainer = document.querySelector('#tools-marquee-container') as any
 
     Array.from(clonedContainer.children).forEach((img: any) => {
         const clone = img.cloneNode(true); 
@@ -25,13 +25,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <section class="bg-black py-6 relative z-5">
     <div class="overflow-hidden">
-        <div class="flex items-center gap-10 md:gap-30" id="cloned">
+        <div class="flex items-center gap-10 md:gap-30" id="tools-marquee-container">
             {mytools.map(item => (
               <div class="text-white flex-1 text-2xl whitespace-nowrap"> {item} </div>
             ))}
         </div>
     </div>
 </section>
-
-
-

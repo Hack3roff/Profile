@@ -1,0 +1,58 @@
+---
+import '../styles/global.css'
+import Layout from "../layouts/Layout.astro"
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import Bars from '../components/Bars.astro'
+
+const socials = [
+  { icon: 'ri-mail-line', link: 'mailto:vimalraj.sr@email.com' },
+  { icon: 'ri-linkedin-fill', link: 'https://www.linkedin.com/in/vimalraj-sr/' },
+  { icon: 'ri-github-line', link: 'https://github.com/vimalrajs' },
+]
+---
+
+<Layout>
+  <Header />
+  <main class="py-20 px-3">
+    <div class="max-w-3xl mx-auto p-5 bg-white border-3 shadow-[8px_8px_0px_rgba(0,0,0,0.3)] relative">
+      <h1 class="text-4xl font-medium mb-8 text-center">Let's Connect</h1>
+      <p class="text-lg text-center mb-10">
+        Feel free to reach out to discuss project collaborations, internships, or just to say hello.
+      </p>
+
+      <form action="#" method="POST" class="flex flex-col gap-6 max-w-lg mx-auto">
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+          <input type="text" name="name" id="name" required
+            class="mt-1 block w-full px-3 py-2 border-2 border-black rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black sm:text-sm" />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" name="email" id="email" required
+            class="mt-1 block w-full px-3 py-2 border-2 border-black rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black sm:text-sm" />
+        </div>
+        <div>
+          <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
+          <textarea id="message" name="message" rows="4" required
+            class="mt-1 block w-full px-3 py-2 border-2 border-black rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black sm:text-sm"></textarea>
+        </div>
+        <button type="submit"
+          class="inline-flex justify-center py-2 px-6 border-3 rounded-full shadow-sm text-md font-medium text-black bg-[var(--blue)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.3)] transition-all duration-200">
+          Send Message
+        </button>
+      </form>
+
+      <div class="mt-10 pt-6 border-t border-black text-center">
+        <h2 class="text-xl font-medium mb-4">Or find me on</h2>
+        <div class="flex justify-center gap-5">
+          {socials.map(item => (
+            <a href={item.link} target="_blank" class="transition-all duration-200 hover:translate-y-[2px]"><i class={`${item.icon} text-2xl`}></i></a>
+          ))}
+        </div>
+      </div>
+      <Bars />
+    </div>
+  </main>
+  <Footer />
+</Layout>

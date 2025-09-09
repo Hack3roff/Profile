@@ -3,27 +3,7 @@ import Bars from "./Bars.astro"
 
 import svgUnderline from '../assets/underline.svg'
 import arrowCard from '../assets/arrow-card.svg'
-
-const portfolio = [
-  { 
-    name: 'Portfolio design', desc: `UI design - User research - webflow development`,
-    cover: `https://images.pexels.com/photos/1051075/pexels-photo-1051075.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2`
-  },
-  { 
-    name: 'Portfolio design', desc: `UI design - User research - webflow development`,
-    cover: `https://images.pexels.com/photos/2303781/pexels-photo-2303781.jpeg?auto=compress&cs=tinysrgb&w=1600`
-  },
-  { 
-    name: 'Portfolio design', desc: `UI design - User research - webflow development`,
-    cover: `https://images.pexels.com/photos/441963/pexels-photo-441963.jpeg?auto=compress&cs=tinysrgb&w=1600`
-  },
-  { 
-    name: 'Portfolio design', desc: `UI design - User research - webflow development`,
-    cover: `https://images.pexels.com/photos/245240/pexels-photo-245240.jpeg?auto=compress&cs=tinysrgb&w=1600`
-  },
-]
 ---
-
 
 <section class="py-25 space-y-10 px-5" id="work">
     <div class="max-w-md mx-auto relative ">
@@ -31,21 +11,82 @@ const portfolio = [
       <img src={svgUnderline.src} alt="arrow" width="140" class="absolute left-50 -bottom-1" />
     </div>
   
-    <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10"> 
-      {portfolio.map(item => ( 
-        <a href="#" class="flex flex-col bg-white p-5 group relative transition-all duration-200 hover:shadow-[4px_4px_0px_rgba(0,0,0,0.3)]">
-          <div class="w-full h-[200px] overflow-hidden border-2">
-           <img src={item.cover} alt="" class="w-full h-full object-cover" />
-          </div>
-          <div class="space-y-1 pt-4">
-            <div class="flex pr-2">
-              <h2 class="text-xl font-medium flex-1">{item.name}</h2>
-              <img src={arrowCard.src} alt="arrow" width="25" />
-            </div>
-            <p class="mr-20">{item.desc}</p>
-          </div>
-          <Bars />
-        </a>
-      ))}
+    <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10" id="portfolio-container"> 
+      <!-- Projects will be dynamically loaded here by JavaScript -->
     </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const apiEndpoint = 'https://profile.triodedevs.workers.dev/projects';
+    const portfolioContainer = document.getElementById('portfolio-container');
+
+    if (!portfolioContainer) {
+      console.error('Portfolio container not found.');
+      return;
+    }
+
+    portfolioContainer.innerHTML = `
+      <div class="col-span-1 md:col-span-2 text-center text-xl text-gray-500">
+        Loading projects...
+      </div>
+    `;
+
+    try {
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      
+      const projects = data.projects;
+
+      if (!projects || projects.length === 0) {
+        portfolioContainer.innerHTML = `
+          <div class="col-span-1 md:col-span-2 text-center text-xl text-gray-500">
+            No projects found.
+          </div>
+        `;
+        return;
+      }
+
+      portfolioContainer.innerHTML = ''; // Clear loading message
+
+      projects.forEach(project => {
+        let coverImage = '';
+        try {
+          const images = JSON.parse(project.images_json);
+          if (Array.isArray(images) && images.length > 0) {
+            coverImage = images[0].image_url;
+          }
+        } catch (e) {
+          console.error('Failed to parse images_json:', e);
+        }
+
+        const projectHtml = `
+          <a href="#" class="flex flex-col bg-white p-5 group relative transition-all duration-200 hover:shadow-[4px_4px_0px_rgba(0,0,0,0.3)]">
+            <div class="w-full h-[200px] overflow-hidden border-2">
+             <img src="${coverImage}" alt="${project.name} cover" class="w-full h-full object-cover" />
+            </div>
+            <div class="space-y-1 pt-4">
+              <div class="flex pr-2">
+                <h2 class="text-xl font-medium flex-1">${project.name}</h2>
+                <img src="${arrowCard.src}" alt="arrow" width="25" />
+              </div>
+              <p class="mr-20">${project.short_description}</p>
+            </div>
+            <Bars />
+          </a>
+        `;
+        portfolioContainer.insertAdjacentHTML('beforeend', projectHtml);
+      });
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
+      portfolioContainer.innerHTML = `
+        <div class="col-span-1 md:col-span-2 text-center text-xl text-red-500">
+          Failed to load projects. Please try again later.
+        </div>
+      `;
+    }
+  });
+</script>

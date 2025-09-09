@@ -1,6 +1,6 @@
 const author = {
-    name: `Angela`,
-    nickname: `angie`,
+    name: `vimalraj`,
+    nickname: `vimal`,
     tiktok: `https://www.tiktok.com/@codetonero`,
     ig: `https://www.instagram.com/codetonero/`,
     x: `https://x.com/codetonero`,
@@ -11,7 +11,7 @@ const author = {
 
 const buy = {
     title: `See on Github`,
-    link: `https://github.com/anthonylan/angie`
+    link: `https://github.com/Hack3roff`
 }
 
 
