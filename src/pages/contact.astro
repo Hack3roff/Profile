@@ -6,9 +6,9 @@ import Footer from '../components/Footer.astro'
 import Bars from '../components/Bars.astro'
 
 const socials = [
-  { icon: 'ri-mail-line', link: 'mailto:vimalraj.sr@email.com' },
-  { icon: 'ri-linkedin-fill', link: 'https://www.linkedin.com/in/vimalraj-sr/' },
-  { icon: 'ri-github-line', link: 'https://github.com/vimalrajs' },
+  { icon: 'ri-mail-line', link: 'mailto:vimalraj.cs.05@gmail.com' },
+  { icon: 'ri-linkedin-fill', link: 'https://www.linkedin.com/in/vimalraj-s-r-24b7bb305' },
+  { icon: 'ri-github-line', link: 'https://github.com/Hack3roff' },
 ]
 ---
 
@@ -21,7 +21,12 @@ const socials = [
         Feel free to reach out to discuss project collaborations, internships, or just to say hello.
       </p>
 
-      <form action="#" method="POST" class="flex flex-col gap-6 max-w-lg mx-auto">
+      <form id="contact-form" action="https://api.web3forms.com/submit" method="POST" class="flex flex-col gap-6 max-w-lg mx-auto">
+        <input type="hidden" name="access_key" value="fad031d2-46de-4db3-82e0-ed9966e2ca60">
+        <input type="hidden" name="subject" value="New Contact Form Submission from your Portfolio">
+        <input type="hidden" name="from_name" value="Your Website">
+        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
           <input type="text" name="name" id="name" required
@@ -37,11 +42,24 @@ const socials = [
           <textarea id="message" name="message" rows="4" required
             class="mt-1 block w-full px-3 py-2 border-2 border-black rounded-md shadow-sm focus:outline-none focus:ring-black focus:border-black sm:text-sm"></textarea>
         </div>
+        <div id="result" class="text-center font-medium"></div>
         <button type="submit"
           class="inline-flex justify-center py-2 px-6 border-3 rounded-full shadow-sm text-md font-medium text-black bg-[var(--blue)] hover:shadow-[4px_4px_0px_rgba(0,0,0,0.3)] transition-all duration-200">
           Send Message
         </button>
       </form>
+
+      <div class="text-center my-6">
+        <span class="text-gray-600 font-semibold">OR</span>
+      </div>
+
+      <div class="text-center">
+        <a href="https://wa.me/916380715189" target="_blank"
+          class="inline-flex items-center justify-center py-3 px-8 border-3 rounded-full shadow-sm text-md font-medium text-black bg-green-400 hover:bg-green-500 hover:shadow-[4px_4px_0px_rgba(0,0,0,0.3)] transition-all duration-200">
+          <i class="ri-whatsapp-line mr-2 text-2xl"></i>
+          Contact on WhatsApp
+        </a>
+      </div>
 
       <div class="mt-10 pt-6 border-t border-black text-center">
         <h2 class="text-xl font-medium mb-4">Or find me on</h2>
@@ -56,3 +74,50 @@ const socials = [
   </main>
   <Footer />
 </Layout>
+
+<script>
+  const form = document.getElementById('contact-form');
+  const result = document.getElementById('result');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+    result.innerHTML = "Please wait..."
+    result.classList.remove("text-green-500", "text-red-500");
+
+
+    fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: json
+        })
+        .then(async (response) => {
+            let json = await response.json();
+            if (response.status == 200) {
+                result.innerHTML = json.message;
+                result.classList.add("text-green-500");
+            } else {
+                console.log(response);
+                result.innerHTML = json.message;
+                result.classList.add("text-red-500");
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            result.innerHTML = "Something went wrong!";
+            result.classList.add("text-red-500");
+        })
+        .then(function() {
+            form.reset();
+            setTimeout(() => {
+                result.innerHTML = "";
+            }, 3000);
+        });
+  });
+</script>
+

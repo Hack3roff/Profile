@@ -2,9 +2,9 @@ const author = {
     name: `vimalraj`,
     nickname: `vimal`,
     tiktok: `https://www.tiktok.com/@codetonero`,
-    ig: `https://www.instagram.com/codetonero/`,
+    ig: `https://www.instagram.com/https_vimal.io`,
     x: `https://x.com/codetonero`,
-    email: 'mailto:anthonylannn@gmail.com'
+    email: 'mailto:vimalraj.cs.05@gmail.com'
 
 }
 
