@@ -6,3 +6,18 @@
 @import "tailwindcss";
 
 
+
+/* Add this to ../styles/global.css */
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+/* This class will be applied to the scrolling container.
+  '40s' is the duration; make it longer for a slower scroll
+  or shorter for a faster one.
+*/
+.scrolling-marquee {
+  animation: marquee 40s linear infinite;
+}
