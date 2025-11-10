@@ -53,7 +53,6 @@ interface ReviewApiResponse {
   reviews: Review[];
 }
 
-// NEW INTERFACE for the list of all projects
 interface ProjectListApiResponse {
   success: boolean;
   data: Project[];
@@ -83,7 +82,6 @@ export async function getStaticPaths() {
 
     console.log(`Found ${apiData.data.length} projects`);
     
-    // Map project data to the format Astro requires
     const paths = apiData.data.map(project => ({
       params: { id: project.id },
     }));
@@ -93,15 +91,11 @@ export async function getStaticPaths() {
 
   } catch (error) {
     console.error("Error in getStaticPaths:", error);
-    // Return empty array to enable dynamic routing as fallback
     return [];
   }
 }
 
-// Enable dynamic routing for paths not generated at build time
 export const prerender = false;
-
-// --- END NEW FUNCTION ---
 
 // --- 3. DATA FETCHING (for the page template) ---
 const PROJECT_API_BASE = "https://portfolio.triodedevs.workers.dev";
@@ -112,14 +106,12 @@ let project: Project | null = null;
 let reviews: Review[] = [];
 
 try {
-  // Fetch Project
   const projectRes = await fetch(`${PROJECT_API_BASE}/public/${id}`);
   if (!projectRes.ok) throw new Error("Project not found");
   
   const projectApiData = (await projectRes.json()) as ProjectApiResponse;
   project = projectApiData.data;
 
-  // Fetch Reviews
   const reviewRes = await fetch(`https://portfolio.triodedevs.workers.dev/api/reviews?project_id=${id}`);
   if (reviewRes.ok) {
     const reviewApiData = (await reviewRes.json()) as ReviewApiResponse;
@@ -185,15 +177,33 @@ const youtubeEmbedUrl = getYoutubeEmbedUrl(project.links.youtube || project.link
         </div>
       )}
 
-      <div class="flex overflow-x-auto gap-4 p-2 bg-gray-100 border-2">
-        {project.media.images.map(imgUrl => (
-          <img 
-            src={imgUrl} 
-            alt={`${project.title} screenshot`} 
-            class="gallery-image h-48 w-auto flex-shrink-0 object-cover border-2 cursor-pointer transition-transform duration-200 hover:scale-105" 
-          />
-        ))}
-      </div>
+      <!-- Infinite Auto-Scrolling Image Gallery -->
+      <!-- Infinite Auto-Scrolling Image Gallery - Fixed -->
+<div class="relative w-full overflow-hidden bg-gray-100 border-2 py-4">
+  <div class="scroll-container">
+    <div class="scroll-track">
+      {project.media.images.map((imgUrl, index) => (
+        <img 
+          src={imgUrl} 
+          alt={`${project.title} screenshot ${index + 1}`} 
+          class="gallery-image border-2 cursor-pointer hover:scale-105 transition-transform duration-200"
+          data-index={index}
+        />
+      ))}
+    </div>
+    <div class="scroll-track" aria-hidden="true">
+      {project.media.images.map((imgUrl, index) => (
+        <img 
+          src={imgUrl} 
+          alt={`${project.title} screenshot ${index + 1}`} 
+          class="gallery-image border-2 cursor-pointer hover:scale-105 transition-transform duration-200"
+          data-index={index}
+        />
+      ))}
+    </div>
+  </div>
+</div>
+
 
       <div class="flex border-t border-b border-gray-100 mb-2 py-4">
         <div class="flex-1 flex gap-6">
@@ -337,9 +347,27 @@ const youtubeEmbedUrl = getYoutubeEmbedUrl(project.links.youtube || project.link
     </div>
   </section>
 
-  <div id="lightbox-overlay" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
-    <button id="lightbox-close" class="absolute top-4 right-6 text-white text-5xl font-bold">&times;</button>
+  <!-- Updated Lightbox with Navigation Buttons -->
+  <div id="lightbox-overlay" class="hidden fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+    <button id="lightbox-close" class="absolute top-4 right-6 text-white text-5xl font-bold hover:text-gray-300 transition-colors z-10">&times;</button>
+    
+    <!-- Previous Button -->
+    <button id="lightbox-prev" class="absolute left-4 text-white text-5xl font-bold hover:text-gray-300 transition-colors z-10 bg-black bg-opacity-50 w-14 h-14 rounded-full flex items-center justify-center">
+      <i class="ri-arrow-left-s-line"></i>
+    </button>
+    
+    <!-- Image -->
     <img id="lightbox-image" src="" alt="Enlarged project image" class="max-w-full max-h-full" />
+    
+    <!-- Next Button -->
+    <button id="lightbox-next" class="absolute right-4 text-white text-5xl font-bold hover:text-gray-300 transition-colors z-10 bg-black bg-opacity-50 w-14 h-14 rounded-full flex items-center justify-center">
+      <i class="ri-arrow-right-s-line"></i>
+    </button>
+    
+    <!-- Image Counter -->
+    <div id="lightbox-counter" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-lg font-medium bg-black bg-opacity-50 px-4 py-2 rounded-full">
+      1 / 1
+    </div>
   </div>
 
 </Layout>
@@ -349,9 +377,54 @@ const youtubeEmbedUrl = getYoutubeEmbedUrl(project.links.youtube || project.link
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5; /* Show 5 lines */
+    -webkit-line-clamp: 5;
+  }
+
+  /* Infinite Scroll Animation - Fixed */
+  .scroll-container {
+    display: flex;
+    width: 100%;
+  }
+
+  .scroll-track {
+    display: flex;
+    gap: 1rem;
+    padding: 0 0.5rem;
+    animation: infinite-scroll 40s linear infinite;
+    flex-shrink: 0;
+  }
+
+  /* Second track starts where first track ends - no duplicate visible */
+  .scroll-track:nth-child(2) {
+    animation: infinite-scroll 40s linear infinite;
+  }
+
+  .scroll-track:hover {
+    animation-play-state: paused;
+  }
+
+  .scroll-container:hover .scroll-track {
+    animation-play-state: paused;
+  }
+
+  .gallery-image {
+    height: auto;
+    max-height: 12rem;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  @keyframes infinite-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
   }
 </style>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -378,28 +451,86 @@ const youtubeEmbedUrl = getYoutubeEmbedUrl(project.links.youtube || project.link
       });
     }
 
-    // --- Image Lightbox Logic ---
+    // --- Image Lightbox Logic with Navigation ---
     const lightboxOverlay = document.getElementById('lightbox-overlay');
     const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
     const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+    const lightboxCounter = document.getElementById('lightbox-counter');
     const galleryImages = document.querySelectorAll('.gallery-image');
+    
+    let currentImageIndex = 0;
+    const imageUrls: string[] = [];
+    
+    // Collect unique image URLs
+    galleryImages.forEach((img) => {
+      const imgElement = img as HTMLImageElement;
+      if (!imageUrls.includes(imgElement.src)) {
+        imageUrls.push(imgElement.src);
+      }
+    });
 
-    if (lightboxOverlay && lightboxImage && lightboxClose) {
-      galleryImages.forEach(image => {
+    const updateLightboxImage = (index: number) => {
+      currentImageIndex = (index + imageUrls.length) % imageUrls.length;
+      lightboxImage.src = imageUrls[currentImageIndex];
+      if (lightboxCounter) {
+        lightboxCounter.innerText = `${currentImageIndex + 1} / ${imageUrls.length}`;
+      }
+    };
+
+    const openLightbox = (index: number) => {
+      updateLightboxImage(index);
+      lightboxOverlay?.classList.remove('hidden');
+      lightboxOverlay?.classList.add('flex');
+    };
+
+    const closeLightbox = () => {
+      lightboxOverlay?.classList.add('hidden');
+      lightboxOverlay?.classList.remove('flex');
+    };
+
+    if (lightboxOverlay && lightboxImage && lightboxClose && lightboxPrev && lightboxNext) {
+      // Open lightbox on image click
+      galleryImages.forEach((image, index) => {
         image.addEventListener('click', () => {
           const imgElement = image as HTMLImageElement;
-          lightboxImage.src = imgElement.src;
-          lightboxOverlay.classList.remove('hidden');
-          lightboxOverlay.classList.add('flex');
+          const imgIndex = imageUrls.indexOf(imgElement.src);
+          openLightbox(imgIndex);
         });
       });
-      const closeLightbox = () => {
-        lightboxOverlay.classList.add('hidden');
-        lightboxOverlay.classList.remove('flex');
-      };
+
+      // Close button
       lightboxClose.addEventListener('click', closeLightbox);
+
+      // Previous button
+      lightboxPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateLightboxImage(currentImageIndex - 1);
+      });
+
+      // Next button
+      lightboxNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        updateLightboxImage(currentImageIndex + 1);
+      });
+
+      // Close on overlay click
       lightboxOverlay.addEventListener('click', (e) => {
         if (e.target === lightboxOverlay) closeLightbox();
+      });
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (!lightboxOverlay?.classList.contains('hidden')) {
+          if (e.key === 'Escape') {
+            closeLightbox();
+          } else if (e.key === 'ArrowLeft') {
+            updateLightboxImage(currentImageIndex - 1);
+          } else if (e.key === 'ArrowRight') {
+            updateLightboxImage(currentImageIndex + 1);
+          }
+        }
       });
     }
 
@@ -520,10 +651,9 @@ const youtubeEmbedUrl = getYoutubeEmbedUrl(project.links.youtube || project.link
             body: JSON.stringify(payload),
           });
           
-          const responseData = await response.json(); // Read the response
+          const responseData = await response.json();
           
-          if (response.ok) { // Check for 2xx status
-            // Use success message from API
+          if (response.ok) {
             showStatus(responseData.message || 'Review submitted successfully!', 'success');
             reviewForm.reset();
             (document.getElementById('rating-value') as HTMLInputElement).value = '0';
@@ -533,7 +663,6 @@ const youtubeEmbedUrl = getYoutubeEmbedUrl(project.links.youtube || project.link
               star.classList.remove('ri-star-fill', 'text-yellow-400');
             });
           } else {
-            // Use error message from API
             throw new Error(responseData.error || responseData.message || 'Failed to submit review.');
           }
         } catch (error) {
